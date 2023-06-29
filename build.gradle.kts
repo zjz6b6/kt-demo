@@ -44,6 +44,7 @@ kotlin {
                 implementation("io.ktor:ktor-server-netty:2.2.1")
                 implementation("io.ktor:ktor-server-html-builder-jvm:2.2.1")
                 implementation("org.jetbrains.kotlinx:kotlinx-html-jvm:0.8.1")
+                implementation("io.github.oshai:kotlin-logging-jvm:4.0.0")
             }
         }
         val jvmTest by getting

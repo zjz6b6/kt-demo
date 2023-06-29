@@ -1,5 +1,13 @@
 package com.github.zjz6b6.ideaplugindemo.learn
 
+import io.github.oshai.kotlinlogging.KotlinLogging
+import java.awt.Rectangle
+import java.math.BigDecimal
+import java.nio.file.Files
+import java.nio.file.Paths
+
+private val logger = KotlinLogging.logger {}
+
 var a = 10
 var b = 11
 
@@ -91,6 +99,7 @@ fun parseInt(str: String): Int? {
     }
     return str.toInt()
 }
+
 fun printProduct(arg1: String, arg2: String) {
     val x = parseInt(arg1)
     val y = parseInt(arg2)
@@ -99,9 +108,71 @@ fun printProduct(arg1: String, arg2: String) {
     if (x != null && y != null) {
         // x and y are automatically cast to non-nullable after null check
         println(x * y)
-    }
-    else {
+    } else {
         println("'$arg1' or '$arg2' is not a number")
+    }
+}
+
+// 类型 判断 并自动 cast
+fun getStringLength(obj: Any): Int? {
+    if (obj is String) {
+        // `obj` is automatically cast to `String` in this branch
+        return obj.length
+    }
+
+    // `obj` is still of type `Any` outside of the type-checked branch
+    return null
+}
+
+fun demo(x: Any) {
+    if (x is String) {
+        print(x.length) // x is automatically cast to String
+    }
+}
+
+
+// Lazy property
+data class User(val id: Long, val username: String)
+
+val user: User by lazy {  // the value is computed only on first access
+    //can do other initialisation here
+    User(id = 1001, username = "ballu")
+}
+
+// LazyThreadSafetyMode
+val user1: User by lazy(LazyThreadSafetyMode.PUBLICATION) {
+    //can do other initialisation here
+    User(id = 1001, username = "ballu")
+}
+
+// 扩展函数 Extension functions 在不改变原有类的 情况下，扩展类
+class Circle(val radius: Double) {
+    fun area(): Double {
+        return Math.PI * radius * radius;
+    }
+}
+
+fun Circle.perimeter(): Double {
+    return 2 * Math.PI * radius;
+}
+
+// 单例 Create a singleton
+object Resource {
+    val name = "Name"
+}
+
+// 抽象类
+abstract class MyAbstractClass {
+    abstract fun doSomething()
+    abstract fun sleep()
+}
+class MyClass() :  MyAbstractClass() {
+    override fun doSomething() {
+        println("doSomething")
+    }
+
+    override fun sleep() {
+        println("sleep")
     }
 }
 
@@ -175,6 +246,15 @@ fun main() {
     for (x in 9 downTo 0 step 3) {
         print(x)
     }
+    for (i in 1..100) {
+    }  // closed range: includes 100
+    for (i in 1 until 100) {
+    } // half-open range: does not include 100
+    for (x in 2..10 step 2) {
+    }
+    for (x in 10 downTo 1) {
+    }
+    (1..10).forEach { }
 
     println("-------------------------------------------------------------------------------------------------")
     when {
@@ -195,13 +275,115 @@ fun main() {
     printProduct("2", "5")
 
     // bob?.department?.head?.name
-    val a = "Kotlin"
-    val b: String? = null
-    println(b?.length)
-    println(a?.length) // Unnecessary safe call
+    val aa = "Kotlin"
+    val bb: String? = null
+    println(bb?.length)
+    println(aa?.length) // Unnecessary safe call
 
     val listWithNulls: List<String?> = listOf("Kotlin", null)
+    listWithNulls.forEach { println(it) }
     for (item in listWithNulls) {
+        // Execute if not null
         item?.let { println(it) } // prints Kotlin and ignores null
     }
+    var filterNotNull = listWithNulls.filterNotNull()
+    filterNotNull.forEach { println(it) }
+
+    val person: LearnBasicSyntax? = null
+    logger.debug("null person: ${person.toString()}") // Logs "null", does not throw an exception
+
+    val l: Int = if (bb != null) bb.length else -1
+    println(l)
+    // ?: operator 的使用 - 左边非空，则返回左边，否则返回右边
+    // If the expression to the left of ?: is not null, the Elvis operator returns it, otherwise it returns the expression to the right.
+    val ll = bb?.length ?: -2
+    println(ll)
+
+    // !! operator 的使用  - 给null爱好者使用，如果被标识的对象是null，则抛异常
+    // The third option is for NPE-lovers: the not-null assertion operator (!!) converts any value to a non-null type and throws an exception if the value is null
+    try {
+        val lll = bb!!.length
+        println(lll)
+    } catch (e: Exception) {
+        println("lll error ${e.message}")
+    }
+//    var llll = bb.length  // 编译器报错
+
+    // safe cast
+    val sa = "1090";
+    val sa1 = "试试";
+//    val aInt0: Int? = sa as Int   // 报错
+//    val aInt1: Int = sa as Int   // 报错
+    val aInt2: Int? = sa as? Int
+//    val aInt3: Int? = sa as Int?   // 报错
+    val aInt4: Int? = sa1 as? Int
+    println(aInt2)
+    println(aInt4)
+
+    val emails: List<String?> = listOf()
+    val mainEmail = emails.firstOrNull() ?: "我是空的"
+//    val mainEmail1 = emails.first() ?: "我是空的"  // 报错
+    println("mainEmail: $mainEmail")
+
+    val list = listOf("a", "b", "c")
+    // todo 添加元素
+
+    println("--------------------------------扩展函数-----------------------------------------------------------------")
+    // 扩展函数 Extension functions 在不改变原有类的 情况下，扩展类
+    val circle = Circle(5.5);
+    val perimeterValue = circle.perimeter()
+    println("Perimeter: $perimeterValue")
+    val areaValue = circle.area()
+    println("Area: $areaValue")
+
+    println("--------------------------------apply-----------------------------------------------------------------")
+    fun arrayOfMinusOnes(size: Int): IntArray {
+        return IntArray(size).apply { fill(-1) }
+    }
+    var arrayOfMinusOnes = arrayOfMinusOnes(2)
+    arrayOfMinusOnes.forEach { println(it) }
+
+    val myRectangle = Rectangle().apply {
+        x = 4
+        y = 5
+    }
+
+    println("--------------------------------with-----------------------------------------------------------------")
+    // Call multiple methods on an object instance (with)
+    /*
+    class Turtle {
+        fun penDown()
+        fun penUp()
+        fun turn(degrees: Double)
+        fun forward(pixels: Double)
+    }
+
+    val myTurtle = Turtle()
+    with(myTurtle) { //draw a 100 pix square
+        penDown()
+        for (i in 1..4) {
+            forward(100.0)
+            turn(90.0)
+        }
+        penUp()
+    }
+    */
+
+    println("--------------------------------Files-----------------------------------------------------------------")
+    val stream = Files.newInputStream(Paths.get("./README.md"))
+    stream.buffered().reader().use { reader ->
+        println(reader.readText())
+    }
+
+    // 交换值  Swap two variables
+    var a = 1
+    var b = 2
+    a = b.also { b = a }
+    println(a)
+    println(b)
+
+    println("--------------------------------TODO-----------------------------------------------------------------")
+    fun calcTaxes(): BigDecimal = TODO("Waiting for feedback from accounting")
+
+
 }

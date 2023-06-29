@@ -1,4 +1,5 @@
 ## Kotlin Lean
+官方学习：https://play.kotlinlang.org/byExample/01_introduction/01_Hello%20world
 
 ##### kotlin 对比 Java?
 
