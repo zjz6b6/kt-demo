@@ -8,11 +8,33 @@ import java.nio.file.Paths
 
 private val logger = KotlinLogging.logger {}
 
+/**
+ * public / protected / private / internal
+ * expect / actual
+ * final / open / abstract / sealed / const
+ * external
+ * override
+ * lateinit
+ * tailrec
+ * vararg
+ * suspend
+ * inner
+ * enum / annotation / fun // as a modifier in `fun interface`
+ * companion
+ * inline / value
+ * infix
+ * operator
+ * data
+ */
+
 var a = 10
 var b = 11
 
 // 不可修改变量 final
 val f = 10
+
+// 常量
+const val ff = 10
 
 var s = "test string"
 
@@ -385,5 +407,33 @@ fun main() {
     println("--------------------------------TODO-----------------------------------------------------------------")
     fun calcTaxes(): BigDecimal = TODO("Waiting for feedback from accounting")
 
+    println("--------------------------------默认值-----------------------------------------------------------------")
+    fun foo(a: String = "a") { /*...*/ }
 
+    println("--------------------------------类型别名-----------------------------------------------------------------")
+//    typealias MouseClickHandler = (Any, MouseEvent) -> Unit
+//    typealias PersonIndex = Map<String, Person>
+
+    println("--------------------------------Strings-----------------------------------------------------------------")
+    println("""
+    Not
+    trimmed
+    text
+    """
+    )
+
+    println("""
+    Trimmed
+    text
+    """.trimIndent()
+    )
+
+    println()
+
+    val p = """Trimmed to margin text:
+          |if(a > 1) {
+          |    return a
+          |}""".trimMargin()
+
+    println(p)
 }
