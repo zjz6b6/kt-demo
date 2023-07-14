@@ -5,6 +5,7 @@ import java.awt.Rectangle
 import java.math.BigDecimal
 import java.nio.file.Files
 import java.nio.file.Paths
+import javax.swing.JButton
 
 private val logger = KotlinLogging.logger {}
 
@@ -436,4 +437,11 @@ fun main() {
           |}""".trimMargin()
 
     println(p)
+
+    println("--------------------------------array-----------------------------------------------------------------")
+    var emptyArray = emptyArray<JButton>()
+    println(emptyArray.size)    // 0
+
+    var arrayOfNulls = arrayOfNulls<JButton>(3)
+    println(arrayOfNulls.size)    // 0
 }
