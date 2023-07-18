@@ -178,6 +178,9 @@ class Circle(val radius: Double) {
 fun Circle.perimeter(): Double {
     return 2 * Math.PI * radius;
 }
+//var Circle.pie : Int
+//    get() { return this.pie}
+//    set(value) { this.pie = value }
 
 // 单例 Create a singleton
 object Resource {
@@ -185,11 +188,18 @@ object Resource {
 }
 
 // 抽象类
-abstract class MyAbstractClass {
+abstract class MyAbstractClass() {
+
     abstract fun doSomething()
     abstract fun sleep()
 }
+// 主构造函数直接写class后面
 class MyClass() :  MyAbstractClass() {
+
+    init {
+        println("init 构造函数调用的时候被调用")
+    }
+
     override fun doSomething() {
         println("doSomething")
     }
@@ -199,10 +209,72 @@ class MyClass() :  MyAbstractClass() {
     }
 }
 
+
+class Person {
+    var name: String = ""
+    var age: Int = 0
+}
+val p = Person()
+open class Person2(var name: String, var age: Int) {
+    init {
+        println("inti")
+    }
+}
+// 同时会调用父类的两参数构造函数
+class Person3(name: String, age: Int) : Person2(name, age) {
+    init {
+        println("Person3 init")
+    }
+
+    constructor(name: String, age: Int, sex: String) : this(name, age) {
+
+    }
+
+    constructor(name: String, age: Int, sex: String, idCard: String) : this(name, age, sex) {
+
+    }
+}
+class Person4 : Person2 {
+    init {
+        println("Person4 init")
+    }
+
+    constructor(name: String, age: Int) : super(name, age) {
+
+    }
+
+    constructor(name: String, age: Int, sex: String) : this(name, age) {
+
+    }
+}
+
+// 半生对象
+class StringUtils {
+    companion object {
+        fun isEmpty(str: String) : Boolean {
+            return "" == str
+        }
+    }
+}
+// 单例
+class Single private constructor() {
+    companion object {
+        fun get() : Single {
+            return Holder.instance
+        }
+
+        private object Holder {
+            val instance = Single()
+        }
+    }
+}
+
 fun main() {
     println("Hello World")
 
     println(sum(a, b))
+
+    println(StringUtils.isEmpty("a"))
 
     try {
         s = s2!!
@@ -358,6 +430,11 @@ fun main() {
     println("Perimeter: $perimeterValue")
     val areaValue = circle.area()
     println("Area: $areaValue")
+//    var pie = circle.pie
+//    println("pie1: $pie")
+//    circle.pie = 5
+//    println("pie2: $pie")
+//    println("pie3: ${circle.pie}")
 
     println("--------------------------------apply-----------------------------------------------------------------")
     fun arrayOfMinusOnes(size: Int): IntArray {
