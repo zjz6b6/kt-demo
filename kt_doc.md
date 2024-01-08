@@ -1,4 +1,5 @@
 ## Kotlin Lean
+> https://book.kotlincn.net/text/getting-started.html
 
 ##### kotlin 对比 Java?
 
